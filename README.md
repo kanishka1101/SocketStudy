@@ -57,31 +57,56 @@ Socket programming finds applications in various domains, including web developm
 ## server.py
 
 import socket
+
+
 HOST = '127.0.0.1'   # Localhost
+
 PORT = 8080
+
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 server_socket.bind((HOST, PORT))
+
 server_socket.listen(1)
+
+
 print(f"Server listening on {HOST}:{PORT}...")
+
 conn, addr = server_socket.accept()
+
 print(f"Connected by {addr}")
+
 data = conn.recv(1024).decode()
+
 print("Client:", data)
+
 conn.sendall("Hello from Server".encode())
+
 conn.close()
+
 server_socket.close()
 
 ## client.py
 
+
 import socket
+
 HOST = '127.0.0.1'
+
 PORT = 8080
+
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 client_socket.connect((HOST, PORT))
+
 client_socket.sendall("Hello from Client".encode())
+
 print("Message sent to server")
+
 data = client_socket.recv(1024).decode()
+
 print("Server:", data)
+
 client_socket.close()
 
 ## Output:
