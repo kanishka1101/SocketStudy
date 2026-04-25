@@ -55,90 +55,75 @@ Socket programming finds applications in various domains, including web developm
 
 ## Program:
 ## server.py
-
 import socket
-import threading
-HOST = '0.0.0.0'
-PORT = 12345
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((HOST, PORT))
-server.listen()
-clients = []
-names = []
-def broadcast(message):
-    for client in clients:
-        client.send(message)
-def handle(client):
-    while True:
-        try:
-            message = client.recv(1024)
-            broadcast(message)
-        except:
-            index = clients.index(client)
-            clients.remove(client)
-            client.close()
-            name = names[index]
-            broadcast(f"{name} left the chat!".encode('utf-8'))
-            names.remove(name)
-            break
-def receive():
-    print("Server is running...")
-    while True:
-        client, address = server.accept()
-        print(f"Connected with {str(address)}")
 
-        client.send("NAME".encode('utf-8'))
-        name = client.recv(1024).decode('utf-8')
-        names.append(name)
-        clients.append(client)
+HOST = '127.0.0.1'   # Localhost
+PORT = 8080
 
-        print(f"Username is {name}")
-        broadcast(f"{name} joined the chat!".encode('utf-8'))
+def start_server():
+    # Create socket
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        thread = threading.Thread(target=handle, args=(client,))
-        thread.start()
-receive()
+    # Bind socket
+    server.bind((HOST, PORT))
+
+    # Listen for connections
+    server.listen(1)
+    print(f"Server listening on {HOST}:{PORT}...")
+
+    # Accept connection
+    conn, addr = server.accept()
+    print(f"Connected by {addr}")
+
+    # Receive data
+    data = conn.recv(1024).decode()
+    print("Client:", data)
+
+    # Send response
+    conn.sendall("Hello from Server".encode())
+
+    # Close connection
+    conn.close()
+    server.close()
+
+if __name__ == "__main__":
+    start_server()
 
 ## client.py
 
-import socket  
-import threading  
-HOST = '127.0.0.1'   # use server IP if different system  
-PORT = 12345  
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect((HOST, PORT))
-name = input("Enter your name: ")
-def receive():
-    while True:
-        try:
-            message = client.recv(1024).decode('utf-8')
-            if message == 'NAME':
-                client.send(name.encode('utf-8'))
-            else:
-                print(message)
-        except:
-            print("Error!")
-            client.close()
-            break
-def write():
-    while True:
-        msg = f"{name}: {input('')}"
-        client.send(msg.encode('utf-8'))
-thread1 = threading.Thread(target=receive)
-thread1.start()
-thread2 = threading.Thread(target=write)
-thread2.start()
+import socket
 
+HOST = '127.0.0.1'
+PORT = 8080
 
+def start_client():
+    # Create socket
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Connect to server
+    client.connect((HOST, PORT))
+
+    # Send message
+    client.sendall("Hello from Client".encode())
+    print("Message sent to server")
+
+    # Receive response
+    data = client.recv(1024).decode()
+    print("Server:", data)
+
+    # Close connection
+    client.close()
+
+if __name__ == "__main__":
+    start_client()
 
 
 
 ## Output:
 
-<img width="939" height="178" alt="Screenshot 2026-04-24 143508" src="https://github.com/user-attachments/assets/c2d918b7-a909-403d-999e-eb9d459cf6de" />
+![alt text](<Screenshot 2026-04-25 103513.png>)
 
-<img width="1026" height="152" alt="Screenshot 2026-04-24 144448" src="https://github.com/user-attachments/assets/236af852-7fdc-4cba-8e73-7564d992abc2" />
-
+![alt text](<Screenshot 2026-04-25 103532.png>)
 
 ## Result:
 Thus the study of Socket Programming Completed Successfully
