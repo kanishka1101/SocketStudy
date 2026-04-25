@@ -1,5 +1,5 @@
 # Ex.No:1a  			Study of Socket Programming
-
+Name:Kanishka G
 ## Aim: 
 To perform a study on Socket Programming
 ## Introduction:
@@ -58,22 +58,16 @@ Socket programming finds applications in various domains, including web developm
 
 import socket
 import threading
-
-# Server setup
 HOST = '0.0.0.0'
 PORT = 12345
-
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 server.listen()
-
 clients = []
 names = []
-
 def broadcast(message):
     for client in clients:
         client.send(message)
-
 def handle(client):
     while True:
         try:
@@ -87,7 +81,6 @@ def handle(client):
             broadcast(f"{name} left the chat!".encode('utf-8'))
             names.remove(name)
             break
-
 def receive():
     print("Server is running...")
     while True:
@@ -104,23 +97,17 @@ def receive():
 
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
-
 receive()
 
 ## client.py
 
-import socket
-import threading
-
-# Connect to server
-HOST = '127.0.0.1'   # use server IP if different system
-PORT = 12345
-
+import socket  
+import threading  
+HOST = '127.0.0.1'   # use server IP if different system  
+PORT = 12345  
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((HOST, PORT))
-
 name = input("Enter your name: ")
-
 def receive():
     while True:
         try:
@@ -133,16 +120,12 @@ def receive():
             print("Error!")
             client.close()
             break
-
 def write():
     while True:
         msg = f"{name}: {input('')}"
         client.send(msg.encode('utf-8'))
-
-# Threads for send & receive
 thread1 = threading.Thread(target=receive)
 thread1.start()
-
 thread2 = threading.Thread(target=write)
 thread2.start()
 
